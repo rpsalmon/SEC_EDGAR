@@ -43,4 +43,4 @@ df1.rename(columns={'cik':'CIK_stripped'}, inplace=True)
 #print('df1 data types\n', df1.dtypes)
 
 fd = df.merge(df1, left_on='CIK_stripped', right_on='CIK_stripped')
-print(fd.loc[fd['ticker'].isin(['NKE','TSLA'])])
+print(fd.loc[fd['ticker'].isin(['GS','TSLA'])])
