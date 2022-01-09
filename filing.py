@@ -7,14 +7,25 @@ Using requests and beautiful soup'''
 import requests
 from bs4 import BeautifulSoup
 
+# function to easily make url's
+def make_url(root, comp):
+    url = root
+
+    for i in comp:
+        url = f'{url}/{i}'
+    return url
+
 # the base url where data is found
 base_url = r'https://www.sec.gov/Archives/edgar/data'
+
+# create a progra that will ask for the ticker and retrieve the cik
+ticker = 'RIVN'
 
 '''the CIK number of the company
 will need to parse the CIK lookup to create a 
 program to solve for unknown CIK's'''
-cik = '1318605'
-cik_num = '/' + '1318605' # Goldman Sachs
+cik = '1559720'
+cik_num = '/' + '1559720' # RIVIAN AUTO
 
 '''create the filing url request and decode in json format'''
 filing_url = base_url + cik_num + '/index.json'
@@ -55,29 +66,33 @@ for i in filings:
     for g in file_json:
         if g['name'] == 'FilingSummary.xml':
             #print(base_url + cik_num + '/' + i + '/' + g['name'])
-            sum_url = base_url + cik_num + '/' + i + '/'
-            summary_loc.append(sum_url)
-            #print (sum_url + 'FilingSummary.xml')
+            summary_url = base_url + cik_num + '/' + i + '/'
+            summary_loc.append(summary_url)
+            #print (summary_url + 'FilingSummary.xml')
 
 print('Number of Summaries: ' + str(len(summary_loc)))
 
 '''iterate through the summary locations to parse the urls to each 
 from filing summary to then find financial reports'''
-url_list = []
+report_list = []
+
+cik_ = {}
+cik_[ticker] = {}
 
 for x in summary_loc:
-    lxml = requests.get(x + 'FilingSummary.xml').content
+    lxml = requests.get(x + 'FilingSummary.xml', headers={'User-Agent': 'Rpsalmon rpsalmon@gmail.com'}).content
     #print(x + 'FilingSummary.xml')
-    soup = BeautifulSoup(lxml, 'lxml')
+    soup = BeautifulSoup(lxml, 'xml')
     reports = soup.find('MyReports')
-    cik_ = {}
-    for i, r in enumerate(reports.find_all('Report')[:-1]):
-        cik_['cik'] = {}
-        cik_['cik']['num'] = cik
-        cik_['cik']['url'] = x + r.HtmlFileName.txt
-        cik_['cik']['shortname'] = r.ShortName.txt
-    url_list.append(cik_)
+    #print(reports)
+
+    for r in reports.find_all('Report')[:-1]:
+        cik_[ticker]['cik'] = cik
+        cik_[ticker]['url'] = x + str(r.HtmlFileName.text)
+        cik_[ticker]['shortname'] = str(r.ShortName.text)
+    report_list.append(cik_)
         
-print(url_list)
+print(report_list)
 
 '''accession number -8:-7 will return the 2 digit year'''
+
