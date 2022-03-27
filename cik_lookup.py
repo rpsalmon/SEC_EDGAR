@@ -1,7 +1,8 @@
 ''''CIK business reference
 This will pull the most up to date info from SEC for 
 Company-CIK information and create a dataframe
-to reference and lookup against'''
+to reference and lookup against
+turn this into a function'''
 
 import requests
 import pandas as pd
@@ -12,6 +13,7 @@ d_r = r.text
 #print(decoded)
 
 col_name = ['Company', 'CIK']
+'''splitlines split the data that is returned by line into a list'''
 cik_ = d_r.splitlines()
 #print(cik_)
 
@@ -43,4 +45,4 @@ df1.rename(columns={'cik':'CIK_stripped'}, inplace=True)
 #print('df1 data types\n', df1.dtypes)
 
 fd = df.merge(df1, left_on='CIK_stripped', right_on='CIK_stripped')
-print(fd.loc[fd['ticker'].isin(['GS','TSLA'])])
+print(fd.loc[fd['ticker'].isin([input('Enter ticker symbol: ').upper()])])

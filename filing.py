@@ -18,14 +18,15 @@ def make_url(root, comp):
 # the base url where data is found
 base_url = r'https://www.sec.gov/Archives/edgar/data'
 
-# create a progra that will ask for the ticker and retrieve the cik
-ticker = 'RIVN'
+# create a program that will ask for the ticker and retrieve the cik
+ticker = 'ABNB' #input('Enter ticker symbol: ').upper()
 
 '''the CIK number of the company
 will need to parse the CIK lookup to create a 
-program to solve for unknown CIK's'''
+program to solve for unknown CIK's
+call cik_lookup function'''
 cik = '1559720'
-cik_num = '/' + '1559720' # RIVIAN AUTO
+cik_num = '/' + '1559720' # AIRBNB
 
 '''create the filing url request and decode in json format'''
 filing_url = base_url + cik_num + '/index.json'
@@ -77,7 +78,8 @@ from filing summary to then find financial reports'''
 report_list = []
 
 cik_ = {}
-cik_[ticker] = {}
+cik_[ticker] = []
+tic = cik_[ticker] 
 
 for x in summary_loc:
     lxml = requests.get(x + 'FilingSummary.xml', headers={'User-Agent': 'Rpsalmon rpsalmon@gmail.com'}).content
@@ -85,14 +87,32 @@ for x in summary_loc:
     soup = BeautifulSoup(lxml, 'xml')
     reports = soup.find('MyReports')
     #print(reports)
+    
 
-    for r in reports.find_all('Report')[:-1]:
-        cik_[ticker]['cik'] = cik
+    for r in reports.find_all('Report')[0:-1]:
+        ker = {}
+        ker['cik'] = cik
+        ker['url'] = x + str(r.HtmlFileName.text)
+        ker['shortname'] = str(r.ShortName.text)
+        '''cik_[ticker]['cik'] = cik
         cik_[ticker]['url'] = x + str(r.HtmlFileName.text)
         cik_[ticker]['shortname'] = str(r.ShortName.text)
-    report_list.append(cik_)
+        tic.append(ker['cik'])
+        tic.append(ker['url'])
+        tic.append(ker['shortname'])'''
+        tic.append(ker)
+report_list.append(cik_)
         
-print(report_list)
+#print(cik_)
+#print(len(tic))
 
-'''accession number -8:-7 will return the 2 digit year'''
+short = report_list[0][ticker]
 
+document = set()
+
+for i in short:
+    document.add(i['shortname'])
+#print('Number of Document titles: ' + str(len(document)))
+    #print(i['url'])
+print(document)
+'''accession number -10:-7 will return the 4 digit year'''
